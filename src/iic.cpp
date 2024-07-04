@@ -10,6 +10,7 @@ void iic_setup(){
   Serial.println("Start I2C scanner ...");
   Serial.print("\r\n");
   byte count = 0;
+  Wire.setClock(3400000);
   Wire.begin();
   for (byte i = 8; i < 120; i++)
   {

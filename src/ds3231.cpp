@@ -125,14 +125,14 @@ static uint8_t bcdToDec(uint8_t byte)
 
 uint8_t DS3231_gettime(DateTime* ans)
 {
-	uint8_t receive = 0;
-	if(iic_read(&data_buf, 0x02, DS3231_ADDRESS))
+	char receive = 0;
+	if(iic_read(&receive, 0x02, DS3231_ADDRESS))
 		return 1;
 	ans->hour = bcdToDec(receive);
-	if(iic_read(&data_buf, 0x01, DS3231_ADDRESS))
+	if(iic_read(&receive, 0x01, DS3231_ADDRESS))
 		return 2;
 	ans->minute = bcdToDec(receive);
-	if(iic_read(&data_buf, 0x00, DS3231_ADDRESS))
+	if(iic_read(&receive, 0x00, DS3231_ADDRESS))
 		return 3;
 	ans->second = bcdToDec(receive);
 	return 0;
@@ -140,14 +140,14 @@ uint8_t DS3231_gettime(DateTime* ans)
 
 uint8_t DS3231_getdate(DateTime* ans)
 {
-	uint8_t receive = 0;
-	if(iic_read(&data_buf, 0x06, DS3231_ADDRESS))
+	char receive = 0;
+	if(iic_read(&receive, 0x06, DS3231_ADDRESS))
 		return 1;
 	ans->year = bcdToDec(receive) + 2000;
-	if(iic_read(&data_buf, 0x05, DS3231_ADDRESS))
+	if(iic_read(&receive, 0x05, DS3231_ADDRESS))
 		return 2;
 	ans->month = bcdToDec(receive);
-	if( iic_read(&data_buf, 0x06, DS3231_ADDRESS))
+	if( iic_read(&receive, 0x06, DS3231_ADDRESS))
 		return 3;
 	ans->dayofmonth = bcdToDec(receive);
 	return 0;
