@@ -2,17 +2,17 @@
 #include "Wire.h"
 #include "oledfont.h"
 #include <Arduino.h>
-#define OLED_ADDRESS	      0x3C
-#define  OLED_CMD  0	
-#define  OLED_DATA 1
+#define OLED_ADDRESS 0x3C
+#define  OLED_CMD  1	
+#define  OLED_DATA 0
 
 void Write_IIC_Data(char IIC_Data)
 {
-    iic_write(0x40,IIC_Data,OLED_ADDRESS);
+    iic_write((uint8_t)0x00,IIC_Data,(char)OLED_ADDRESS);
 }
 void Write_IIC_Command(char IIC_Data)
 {
-    iic_write(0x40,IIC_Data,OLED_ADDRESS);
+    iic_write((uint8_t)0x40,IIC_Data,(char)OLED_ADDRESS);
 }
 void OLED_WR_Byte(uint8_t dat,uint8_t cmd)
 {
@@ -111,6 +111,17 @@ void OLED_ShowNum(uint8_t x,uint8_t y,uint32_t num,uint8_t len,uint8_t size2)
 	 	OLED_ShowChar(x+(size2/2)*t,y,temp+'0',size2); 
 	}
 } 
+
+void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t size2)
+{
+	uint8_t j=0;
+	while (chr[j]!='\0')
+	{
+		OLED_ShowChar(x,y,chr[j++],size2);
+		if(size2==8) x+=6;
+		else x+=size2/2;
+	}
+}
 
 
 void OLED_Init(void)

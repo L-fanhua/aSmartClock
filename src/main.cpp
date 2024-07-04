@@ -8,15 +8,22 @@
 void setup(){
   iic_setup();
   OLED_Init();
-  OLED_Display_On();
-  OLED_ShowNum(0,0,12,6,2);
-  OLED_Display_On();
+  OLED_Clear();
+  OLED_ShowChar(0,0,'s',16);
+  //uint8_t hello[] = "Hello, World!";
+  //if(1){OLED_ShowString(0,0,hello,16);}
+  //
 }
 
+DateTImeStruct timeread;
 void loop() {
   delay(1000);
-  DS3231_test();
-
+  if(DS3231_gettime(&timeread)==0){
+    Serial.println(timeread.second);
+  //  OLED_Clear();
+ //   OLED_ShowString(0,0,&timeread.second,16);
+  //  OLED_ShowString(0,16,&timeread.minute,16);
+  }
 }  
     
 

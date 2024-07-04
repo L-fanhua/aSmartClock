@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include "Wire.h"
 #include "iic.h"
+#include "ds3231.h"
 
-#define DS3231_ADDRESS	      0x68 //I2C Slave address
+#define DS3231_ADDRESS	        0x68 //I2C Slave address
 #define	DS3231_ADDRESS_Write	0xD0
 #define	DS3231_ADDRESS_Read		0xD1
 
@@ -113,4 +114,41 @@ void DS3231_test() {
     }
     else
         Serial.print("Read DS3231 err \n");
+}
+static uint8_t bcdToDec(uint8_t byte)
+{
+	uint8_t temp_H , temp_L;
+	temp_L = byte & 0x0f;
+	temp_H = (byte & 0xf0) >> 4;
+	return ( temp_H * 10 )+ temp_L;
+}
+
+uint8_t DS3231_gettime(DateTime* ans)
+{
+	uint8_t receive = 0;
+	if(iic_read(&data_buf, 0x02, DS3231_ADDRESS))
+		return 1;
+	ans->hour = bcdToDec(receive);
+	if(iic_read(&data_buf, 0x01, DS3231_ADDRESS))
+		return 2;
+	ans->minute = bcdToDec(receive);
+	if(iic_read(&data_buf, 0x00, DS3231_ADDRESS))
+		return 3;
+	ans->second = bcdToDec(receive);
+	return 0;
+}
+
+uint8_t DS3231_getdate(DateTime* ans)
+{
+	uint8_t receive = 0;
+	if(iic_read(&data_buf, 0x06, DS3231_ADDRESS))
+		return 1;
+	ans->year = bcdToDec(receive) + 2000;
+	if(iic_read(&data_buf, 0x05, DS3231_ADDRESS))
+		return 2;
+	ans->month = bcdToDec(receive);
+	if( iic_read(&data_buf, 0x06, DS3231_ADDRESS))
+		return 3;
+	ans->dayofmonth = bcdToDec(receive);
+	return 0;
 }
